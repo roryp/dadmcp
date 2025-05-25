@@ -1,4 +1,5 @@
 # 🙄 Sarcastic Jokes MCP Server
+![ChatGPT Image May 25, 2025, 09_51_36 PM](ChatGPT%20Image%20May%2025%2C%202025%2C%2009_51_36%20PM.png)
 
 A Model Context Protocol (MCP) server that provides sarcastic jokes across multiple categories. Because sometimes you need AI to point out life's ironies with the perfect amount of cynicism.
 
