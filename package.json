@@ -1,0 +1,40 @@
+{
+  "name": "dadmcp",
+  "version": "1.0.0",
+  "description": "MCP server for generating sarcastic jokes",
+  "main": "build/index.js",
+  "type": "module",
+  "bin": {
+    "dadmcp": "./build/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc && node build/index.js",
+    "start": "node build/index.js",
+    "verify": "node verify-server.js",
+    "test-server": "node test-server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "jokes",
+    "sarcasm",
+    "humor"
+  ],
+  "author": "",
+  "license": "ISC",
+  "files": [
+    "build"
+  ],
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "zod": "^3.25.28"
+  }
+}

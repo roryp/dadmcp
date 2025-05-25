@@ -1,0 +1,14 @@
+{
+  "_comment": "Replace the path below with your actual installation path",
+  "_examples": {
+    "windows": "C:\\dev\\dadmcp\\build\\index.js",
+    "macOS_Linux": "/Users/username/dev/dadmcp/build/index.js"
+  },
+  "mcpServers": {
+    "sarcastic-jokes": {
+      "command": "node",
+      "args": ["/absolute/path/to/dadmcp/build/index.js"],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarcastic Jokes MCP Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #4a5568;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .tool-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background: #f7fafc;
+        }
+        
+        .tool-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        select, input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background: #fff5f5;
+            border-left: 5px solid #f56565;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+            margin-top: 15px;
+        }
+        
+        .error {
+            background: #fed7d7;
+            border-left-color: #e53e3e;
+            color: #c53030;
+        }
+        
+        .success {
+            background: #f0fff4;
+            border-left-color: #38a169;
+            color: #2f855a;
+        }
+        
+        .joke-count {
+            max-width: 100px;
+        }
+        
+        .server-status {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .status-connected {
+            background: #c6f6d5;
+            color: #276749;
+            border: 2px solid #9ae6b4;
+        }
+        
+        .status-disconnected {
+            background: #fed7d7;
+            color: #c53030;
+            border: 2px solid #feb2b2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🙄 Sarcastic Jokes MCP Client</h1>
+        <p class="subtitle">Because life is just too serious, and someone needs to point out the obvious with style</p>
+        
+        <div id="serverStatus" class="server-status status-disconnected">
+            ⚠️ MCP Server Connection Status: Not Connected<br>
+            <small>This is a demo client. In a real implementation, you would connect to the MCP server via a proper transport mechanism.</small>
+        </div>
+        
+        <!-- Get Single Joke -->
+        <div class="tool-section">
+            <div class="tool-title">🎭 Get a Single Sarcastic Joke</div>
+            <div class="form-group">
+                <label for="singleCategory">Choose a category:</label>
+                <select id="singleCategory">
+                    <option value="programming">Programming 💻</option>
+                    <option value="work">Work 💼</option>
+                    <option value="technology">Technology 📱</option>
+                    <option value="life">Life 🌍</option>
+                </select>
+            </div>
+            <button onclick="getSingleJoke()">Get Joke</button>
+            <div class="loading" id="singleLoading">🙄 Preparing your dose of sarcasm...</div>
+            <div id="singleResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Get Multiple Jokes -->
+        <div class="tool-section">
+            <div class="tool-title">🎪 Get Multiple Sarcastic Jokes</div>
+            <div class="form-group">
+                <label for="multipleCategory">Choose a category:</label>
+                <select id="multipleCategory">
+                    <option value="programming">Programming 💻</option>
+                    <option value="work">Work 💼</option>
+                    <option value="technology">Technology 📱</option>
+                    <option value="life">Life 🌍</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="jokeCount">Number of jokes (1-5):</label>
+                <input type="number" id="jokeCount" min="1" max="5" value="3" class="joke-count">
+            </div>
+            <button onclick="getMultipleJokes()">Get Jokes</button>
+            <div class="loading" id="multipleLoading">🙄 Collecting your arsenal of sarcasm...</div>
+            <div id="multipleResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Get Random Joke -->
+        <div class="tool-section">
+            <div class="tool-title">🎲 Get Random Joke from Any Category</div>
+            <button onclick="getRandomJoke()">Surprise Me</button>
+            <div class="loading" id="randomLoading">🙄 Rolling the dice of disappointment...</div>
+            <div id="randomResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- List Categories -->
+        <div class="tool-section">
+            <div class="tool-title">📝 List Available Categories</div>
+            <button onclick="listCategories()">Show Categories</button>
+            <div class="loading" id="categoriesLoading">📋 Compiling the menu of misery...</div>
+            <div id="categoriesResult" class="result" style="display: none;"></div>
+        </div>
+        
+        <!-- Custom Sarcastic Response -->
+        <div class="tool-section">
+            <div class="tool-title">🎨 Get Custom Sarcastic Response</div>
+            <div class="form-group">
+                <label for="customSituation">Describe your situation:</label>
+                <textarea id="customSituation" rows="3" placeholder="e.g., 'My code worked on the first try'"></textarea>
+            </div>
+            <button onclick="getCustomResponse()">Get Sarcastic Response</button>
+            <div class="loading" id="customLoading">🙄 Crafting your personalized dose of cynicism...</div>
+            <div id="customResult" class="result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mock MCP server responses (in a real implementation, these would call the actual MCP server)
+        const mockResponses = {
+            'get-sarcastic-joke': {
+                programming: [
+                    "Oh great, another semicolon error. Because clearly the computer can't handle your revolutionary approach to punctuation.",
+                    "Sure, let's just add another JavaScript framework. The world definitely needs 500 more ways to build a todo app.",
+                    "Debugging is like being a detective in a crime movie where you are also the murderer. How delightfully meta."
+                ],
+                work: [
+                    "Oh, another meeting that could have been an email? How thrilling. I live for these productivity black holes.",
+                    "Sure, let's pivot the strategy again. Because consistency is overrated and your team loves starting from scratch every quarter.",
+                    "An urgent task that's sat in someone's inbox for 3 weeks? The urgency is truly palpable."
+                ],
+                technology: [
+                    "Oh, you updated your software and now nothing works? Who could have possibly seen that coming?",
+                    "Your phone died right when you needed it most? Technology timing at its absolute finest.",
+                    "Another app asking for location permissions to show you ads? Privacy is so last century anyway."
+                ],
+                life: [
+                    "Traffic is backed up for miles because someone sneezed in the wrong lane? Peak human coordination right there.",
+                    "Your coffee maker broke on Monday morning? The universe clearly has your best interests at heart.",
+                    "The weather app was wrong again? Who needs accuracy when you can have constant disappointment?"
+                ]
+            }
+        };
+
+        function showLoading(loadingId, show = true) {
+            document.getElementById(loadingId).style.display = show ? 'block' : 'none';
+        }
+
+        function showResult(resultId, content, isError = false) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = content;
+            resultDiv.className = `result ${isError ? 'error' : 'success'}`;
+            resultDiv.style.display = 'block';
+        }
+
+        function hideResult(resultId) {
+            document.getElementById(resultId).style.display = 'none';
+        }
+
+        async function mockMcpCall(tool, params) {
+            // Simulate network delay
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1500));
+            
+            if (tool === 'get-sarcastic-joke') {
+                const jokes = mockResponses[tool][params.category];
+                const joke = jokes[Math.floor(Math.random() * jokes.length)];
+                return `🙄 Here's your ${params.category} joke:\n\n"${joke}"`;
+            }
+            
+            if (tool === 'get-multiple-jokes') {
+                const jokes = mockResponses['get-sarcastic-joke'][params.category];
+                const selectedJokes = [];
+                for (let i = 0; i < params.count && i < jokes.length; i++) {
+                    selectedJokes.push(jokes[Math.floor(Math.random() * jokes.length)]);
+                }
+                const jokesList = selectedJokes.map((joke, index) => `${index + 1}. "${joke}"`).join('\n\n');
+                return `🙄 Here are ${params.count} ${params.category} jokes for you:\n\n${jokesList}`;
+            }
+            
+            if (tool === 'get-random-category-joke') {
+                const categories = Object.keys(mockResponses['get-sarcastic-joke']);
+                const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+                const jokes = mockResponses['get-sarcastic-joke'][randomCategory];
+                const joke = jokes[Math.floor(Math.random() * jokes.length)];
+                return `🎲 Random ${randomCategory} joke:\n\n"${joke}"`;
+            }
+            
+            if (tool === 'list-categories') {
+                const categories = ['programming', 'work', 'technology', 'life'];
+                const categoriesText = categories.map(cat => `• ${cat}`).join('\n');
+                return `📝 Available sarcastic joke categories:\n\n${categoriesText}\n\nUse these categories with the other tools to get specific types of jokes!`;
+            }
+            
+            if (tool === 'get-custom-sarcastic-response') {
+                const prefixes = [
+                    "Oh, absolutely fantastic!",
+                    "Well, isn't that just wonderful?",
+                    "How utterly delightful!",
+                    "Oh, what a surprise!",
+                    "That's just marvelous!"
+                ];
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                return `🙄 ${prefix} "${params.situation}"? I'm sure that's exactly what everyone was hoping for today.`;
+            }
+            
+            throw new Error('Unknown tool');
+        }
+
+        async function getSingleJoke() {
+            const category = document.getElementById('singleCategory').value;
+            const button = event.target;
+            
+            hideResult('singleResult');
+            showLoading('singleLoading');
+            button.disabled = true;
+            
+            try {
+                const response = await mockMcpCall('get-sarcastic-joke', { category });
+                showResult('singleResult', response);
+            } catch (error) {
+                showResult('singleResult', `Error: ${error.message}`, true);
+            } finally {
+                showLoading('singleLoading', false);
+                button.disabled = false;
+            }
+        }
+
+        async function getMultipleJokes() {
+            const category = document.getElementById('multipleCategory').value;
+            const count = parseInt(document.getElementById('jokeCount').value);
+            const button = event.target;
+            
+            hideResult('multipleResult');
+            showLoading('multipleLoading');
+            button.disabled = true;
+            
+            try {
+                const response = await mockMcpCall('get-multiple-jokes', { category, count });
+                showResult('multipleResult', response);
+            } catch (error) {
+                showResult('multipleResult', `Error: ${error.message}`, true);
+            } finally {
+                showLoading('multipleLoading', false);
+                button.disabled = false;
+            }
+        }
+
+        async function getRandomJoke() {
+            const button = event.target;
+            
+            hideResult('randomResult');
+            showLoading('randomLoading');
+            button.disabled = true;
+            
+            try {
+                const response = await mockMcpCall('get-random-category-joke', {});
+                showResult('randomResult', response);
+            } catch (error) {
+                showResult('randomResult', `Error: ${error.message}`, true);
+            } finally {
+                showLoading('randomLoading', false);
+                button.disabled = false;
+            }
+        }
+
+        async function listCategories() {
+            const button = event.target;
+            
+            hideResult('categoriesResult');
+            showLoading('categoriesLoading');
+            button.disabled = true;
+            
+            try {
+                const response = await mockMcpCall('list-categories', {});
+                showResult('categoriesResult', response);
+            } catch (error) {
+                showResult('categoriesResult', `Error: ${error.message}`, true);
+            } finally {
+                showLoading('categoriesLoading', false);
+                button.disabled = false;
+            }
+        }
+
+        async function getCustomResponse() {
+            const situation = document.getElementById('customSituation').value;
+            const button = event.target;
+            
+            if (!situation.trim()) {
+                showResult('customResult', 'Please enter a situation to get a sarcastic response about!', true);
+                return;
+            }
+            
+            hideResult('customResult');
+            showLoading('customLoading');
+            button.disabled = true;
+            
+            try {
+                const response = await mockMcpCall('get-custom-sarcastic-response', { situation });
+                showResult('customResult', response);
+            } catch (error) {
+                showResult('customResult', `Error: ${error.message}`, true);
+            } finally {
+                showLoading('customLoading', false);
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
